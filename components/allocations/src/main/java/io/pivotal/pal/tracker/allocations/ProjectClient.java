@@ -11,17 +11,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ProjectClient {
 
     private final RestOperations restOperations;
-    private final String registrationServerEndpoint;
+    private final String endPoint;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Map<Long, ProjectInfo> projectsCache = new ConcurrentHashMap<>();
     public ProjectClient(RestOperations restOperations, String registrationServerEndpoint) {
         this.restOperations= restOperations;
-        this.registrationServerEndpoint = registrationServerEndpoint;
+        this.endPoint = registrationServerEndpoint;
     }
 
     @CircuitBreaker(name = "project", fallbackMethod = "getProjectFromCache")
     public ProjectInfo getProject(long projectId) {
-        return restOperations.getForObject(registrationServerEndpoint + "/projects/" + projectId, ProjectInfo.class);
+        return restOperations.getForObject(endPoint + "/projects/" + projectId, ProjectInfo.class);
     }
     public ProjectInfo getProjectFromCache(long projectId, Throwable cause) {
         logger.info("Getting project with id {} from cache", projectId);
